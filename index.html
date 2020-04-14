@@ -403,6 +403,8 @@
 
 
 <style>
+
+
   * {
     font-family: "Segoe UI", Arial, 'sans-serif' !important;/* <-- fonts */
   }
@@ -414,6 +416,16 @@
     padding: 0;
   }
 
+  #hello {
+    height:100%;
+    width:98%;
+    margin-left:10px;
+    margin-top: 10px;
+    margin-right: 10px;
+    display:flex;
+    flex-flow: column;
+  }
+
   #text {
     flex: 1 1 auto;
     min-width: 15em;
@@ -421,7 +433,7 @@
     width: 95%;
     margin-top: 10px;
     margin-right: 10px;
-    padding: 0.2em 0.1em 0 0.2em;
+    padding: 0.2em 0.2em 0 0.2em;
     background-color: white;
     font-size: 22px;
     text-align: left;
@@ -435,7 +447,7 @@
     #text {
       font-size: 32px;
       width: 90%;
-      min-width: 10em;
+      min-width: 8em;
     }
   }
 
@@ -517,7 +529,7 @@
 
 <body style="background-color:powderblue;">
 
-<div id="hello" style="height:100%; width:100%; margin-left:10px; margin-top: 10px; margin-right: 10px; display:flex; flex-flow: column;">
+<div id="hello">
 
 
   <div style="flex: 0 1 auto;">
@@ -530,7 +542,6 @@
     <label>Voice
       <select id="voice"></select>
     </label>
-
 
     Speed: <input type="range" min="50" max="200" value="100" step="10" id="myRange" style="height:10px">
     <span id="demo"></span>
