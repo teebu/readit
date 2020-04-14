@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+
+    //var message = new SpeechSynthesisUtterance($("#text").val());
+
+    //var message = new SpeechSynthesisUtterance($("#text").val());
+
+
+    var x;
+
+    var beforelastoffset = 0;
+    var lastoffset = 0;
+    var offset = 2;
+
+    var canceled = false;
+
+
+    var message = new SpeechSynthesisUtterance();
+    var voices = speechSynthesis.getVoices();
+
+    var richCaretIndex = 0;
+
+    var spanid = 0;
+
+
+    $(function () {
+
+
+      $("#text").on('keydown keyup mousedown mouseup', function (e) {
+
+
+        if ($(window.getSelection().anchorNode).is($(this))) {
+          //$('#position').html('0')
+
+        } else {
+          //alert(window.getSelection().anchorOffset);
+          ///////////var tarea = document.getElementById('volume');
+
+
+          var parent = document.getElementById('text');
+
+
+          var s = window.getSelection();
+          var an = s.anchorNode;
+          var fn = s.focusNode;
+
+          var i = 0;
+          var jj = 0;
+
+          if (fn != null && fn.parentNode != parent) {
+            fn = fn.parentNode;
+            //console.log( fn.textContent );
+          }
+
+          if (fn != null && fn.previousSibling == null && fn.parentNode != parent) {
+            fn = fn.parentNode;
+            //console.log( fn.textContent );
+          }
+
+          while ((fn != null) && ((fn = fn.previousSibling) != null)) {
+            if (fn.textContent != null) {
+
+              if (fn.textContent.indexOf("\n") < 0) {
+                jj += 1;
+              }
+
+              jj += fn.textContent.length;
+              i++;
+              //console.log( fn.parentNode.textContent );
+              if (fn.previousSibling == null && fn.parentNode != parent) {
+                fn = fn.parentNode;
+
+              }
+
+            }
+          }
+
+
+          richCaretIndex = (jj + window.getSelection().anchorOffset);
+
+
+          console.log(richCaretIndex + " " + "row: " + i + " pevTotal " + jj + " indx " + window.getSelection().anchorOffset);
+
+          ////////tarea.value = ( richCaretIndex + " " +"row: " + i  + " pevTotal " + jj + " indx "  + window.getSelection().anchorOffset);
+
+
+          //$('#position').html(window.getSelection().anchorOffset);
+        }
+      });
+
+    });
+
+    $(function () {
+      document.querySelector("div[contenteditable]").addEventListener("paste", function (e) {
+        e.preventDefault();
+        var text = e.clipboardData.getData("text/plain");
+        text = text.replace("\n", "@NewLine<div>");
+        text = text.replace(/\n/g, "@NewLine</div><div>");
+
+        text = text.replace(/ /g, "&nbsp");
+
+        text = text.replace(/\n/g, "");
+
+        text = text.replace(/@NewLine/g, "\n");
+        //text = text.replace(/\r/g, "");
+
+        //text = text.replace("<p>", "<BR>");
+        //alert(text);
+
+        document.execCommand("insertHTML", false, text);
+      });
+    });
+
+    $(function () {
+      $("input").on("change", function () {
+        console.log($(this).attr("id"), $(this).val());
+        message[$(this).attr("id")] = $(this).val();
+      });
+
+      $("select").on("change", function () {
+        message.voice = voices[$(this).val()];
+      });
+
+
+      $(function () {
+
+
+        $('#btn').on('click', function () {
+
+          canceled = false;
+          //spanid = 0;
+
+          var tarea = document.getElementById('text');
+
+
+          x = tarea.innerText; //$("#text").val();
+          //x = x.replace(/\n/g, "");
+          //x = x.replace(/\r/g, "");
+
+
+          lastoffset = richCaretIndex; // tarea.selectionStart;
+
+
+          //we are at the end, go back to the beginning! :P
+          if (lastoffset == x.length) {
+            lastoffset = 0;
+            tarea.focus();
+            tarea.selectionStart = 0;
+            tarea.selectionEnd = 0;
+            tarea.scrollLeft = 0;
+            tarea.scrollTop = 0;
+            richCaretIndex = 0;
+          }
+
+          beforelastoffset = lastoffset;
+
+          //go 100 char forward and find a period or space
+          //offset = x.indexOf(".", lastoffset+1);
+          offset = getIndex(x, lastoffset + 1);
+          if (offset < 0) {
+            offset = x.length;
+          }
+
+
+          //relace new line if just typed
+          //var replacer = x.substring( lastoffset, offset ).trim();
+          var slider = document.getElementById("myRange");
+          message.rate = parseInt(slider.value) / 100;
+          message.text = x.substring(lastoffset, offset);
+          speechSynthesis.speak(message);
+
+          highlight();
+          lastoffset = offset + 1;
+
+          // create invisible text area +++++
+          /*var tarea = document.getElementById('text');
+          clearTextArea();
+          createTextArea( parseInt(tarea.style.width) , ( parseInt(tarea.style.height) ) );
+          tmpinvisinx = 0;*/
+
+
+        });
+      });
+    });
+
+    message.onend = function (event) {
+
+      if (canceled == true) {
+        return;
+      }
+
+//alert ( x.length + " " + lastoffset );
+      if (lastoffset < x.length) {
+
+        //alert("Hello");
+        beforelastoffset = lastoffset;
+
+        //offset = x.indexOf(".", lastoffset+1);
+        offset = getIndex(x, lastoffset + 1);
+        if (offset < 0) {
+          offset = x.length;
+        }
+
+        var slider = document.getElementById("myRange");
+        message.rate = parseInt(slider.value) / 100;
+        //var replacer = x.substring( lastoffset, offset ).trim();
+        message.text = x.substring(lastoffset, offset);
+        speechSynthesis.speak(message);
+
+
+        highlight();
+
+        richCaretIndex = lastoffset;
+        lastoffset = offset + 1;
+
+      } else {
+        var tarea = document.getElementById('text');
+        tarea.focus();
+        richCaretIndex = 0;
+        tarea.selectionStart = x.length;
+        tarea.selectionEnd = x.length;
+      }
+
+    };
+
+    function getIndex(str, start) {
+      let patt = /(!|\.|\?)/
+      start = start || 0
+
+      let m = patt.exec(str.slice(start))
+
+      if (m) {
+        return m.index + start
+      } else {
+        return -1
+      }
+
+    }
+
+    function highlight() {
+      //find the current reading fragment and highlight it
+      //<span id="The_Anchor_Element">The Anchor Element</span>
+      var tarea = document.getElementById('text');
+
+      //tarea.innerHTML = tarea.innerHTML.replace("background-color:yellow","" );
+
+
+      //function replaceAt(string, index, replace) {
+      //string.substring(0, index) + replace + string.substring(index + 1);
+      //}
+      //x.substring( lastoffset, offset ).trim();
+      // x.substring( lastoffset, offset );
+      // tarea.innerText
+
+      //tarea.innerHTML = tarea.innerHTML.replace(replacer, "<span style=\"background-color:yellow\" id=\"" + spanid + "\">" + replacer +"</span>" ); 
+
+
+      if (x.charAt(lastoffset) == "\"") {
+        lastoffset = lastoffset + 1;
+      }
+      if (x.charAt(lastoffset) == " ") {
+        lastoffset = lastoffset + 1;
+        //console.log( "TRUE");
+      }
+      if (x.charAt(lastoffset) == String.fromCharCode(160)) {
+        lastoffset = lastoffset + 1;
+      }
+
+      //console.log( "|" + (x.substring( lastoffset, offset )) + "|" +  x.charAt(lastoffset).charCodeAt() );
+
+
+      var replacer = x.substring(lastoffset, offset);
+      replacer = replacer.replace(/\n/g, "<BR>");
+      //console.log( replacer );
+      tarea.innerHTML = x.substring(0, lastoffset) + "<span style=\"background-color:yellow\" id=\"" + spanid + "\">" + replacer + "</span>" + x.substring(offset)
+      //console.log( replacer +"|" );
+
+      tarea.innerHTML = tarea.innerHTML.replace("\n", "@NewLine<div>");
+      tarea.innerHTML = tarea.innerHTML.replace(/\n/g, "@NewLine</div><div>");
+      tarea.innerHTML = tarea.innerHTML.replace(/@NewLine/g, "\n");
+
+
+      scrollTo(spanid);
+      spanid++;
+
+    }
+
+    function countNewLines(x) {
+
+      var count = (temp.match(/\n/g) || []).length;
+      return count;
+
+    }
+
+    function scrollTo(hash) {
+
+      //var tarea = document.getElementById('volume');
+      //tarea.value = ( hash + " " + (hash / 2));
+      window.location.hash = hash;
+
+
+    }
+
+    var tmpinvisinx = 0;
+
+    var invisiblex;
+
+    function createTextArea(width, height) {
+      invisiblex = document.createElement("TEXTAREA");
+      invisiblex.style.width = width + "px";
+      invisiblex.style.height = height + "px";
+
+      invisiblex.style.position = "absolute";
+      invisiblex.style.top = "0px";
+      invisiblex.style.left = "-1000px";
+      invisiblex.style.zIndex = "-1";
+
+
+      //invisiblex.style="display:none";
+      var t = document.createTextNode("");
+
+      invisiblex.appendChild(t);
+      document.body.appendChild(invisiblex);
+    }
+
+    function appendToTextArea(textToAppend) {
+      var t = document.createTextNode(textToAppend);
+      invisiblex.appendChild(t);
+      //invisiblex.value = "";
+      document.body.appendChild(invisiblex);
+
+
+      //var tarea = document.getElementById('text');
+      //tarea.scrollTop = invisiblex.scrollheight;
+    }
+
+    function clearTextArea() {
+      if (invisiblex != null) {
+        invisiblex.parentNode.removeChild(invisiblex);
+        invisiblex = null;
+      }
+    }
+
+    function myFunction2() {
+
+    }
+
+
+    $(function () {
+      $('#btn2').on('click', function () {
+        //alert("Hello");
+        //window.alert(event.charIndex);
+        canceled = true;
+        window.speechSynthesis.cancel();
+
+        var tarea = document.getElementById('text');
+        x = tarea.innerText;
+        tarea.innerHTML = x.substring(0);
+        tarea.innerHTML = tarea.innerHTML.replace("\n", "@NewLine<div>");
+        tarea.innerHTML = tarea.innerHTML.replace(/\n/g, "@NewLine</div><div>");
+        tarea.innerHTML = tarea.innerHTML.replace(/@NewLine/g, "\n");
+
+        //beforelastoffset=0;
+        //lastoffset=0;
+        //offset=2;
+
+      });
+    });
+
+
+    // Hack around voices bug
+    var interval = setInterval(function () {
+      voices = speechSynthesis.getVoices();
+      if (voices.length) clearInterval(interval); else return;
+
+      myPersonalPref = -1;
+
+      for (var i = 0; i < voices.length; i++) {
+        $("select").append("<option value=\"" + i + "\">" + voices[i].name + "</option>");
+        var n = voices[i].name.search("Online");
+        if (myPersonalPref == -1 && n != -1) {
+          myPersonalPref = i;
+        }
+      }
+      if (myPersonalPref != -1) {
+        $('#voice').val(myPersonalPref).trigger('change');
+      }
+
+    }, 10);
+
+
+  </script>
+  <title>Read it to me!</title>
+
+
+</head>
+
+
+<style>
+
+
+  html, body {
+    width: 100%;
+    height: 99%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #text {
+    flex: 1 1 auto;
+    min-width: 20em;
+    min-height: 1.4em;
+    width: 95%;
+    padding: 0.3em 0.5em 0 0.5em;
+    background-color: white;
+    font-size: larger;
+    text-align: left;
+    border: 3px solid black;
+    border-radius: 5px;
+    overflow-y: auto;
+  }
+
+
+  section {
+    min-height: 100%;
+  }
+
+  #text {
+    scroll-behavior: smooth
+  }
+
+  .button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    width: 100px;
+    height: 40px;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+  }
+
+  .btn {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  .btn2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  }
+
+
+  .slidecontainer {
+    width: 100%;
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+
+
+</style>
+
+<body style="background-color:powderblue;">
+
+<div id="hello" style="height:100%; margin-left:10px; display:flex; flex-flow: column;">
+
+
+  <div style="flex: 0 1 auto;">
+
+    <h1>
+      Text to speech, able to read from caret position.
+    </h1>
+
+
+    <button id="btn" class="button button2" onclick="Function()">Read</button>
+
+    <button id="btn2" class="button button2" onclick="myFunction2()">Stop</button>
+
+    <label>Voice
+      <select id="voice"></select>
+    </label>
+
+
+    Speed: <input type="range" min="50" max="200" value="100" step="10" id="myRange" style="height:10px">
+    <span id="demo"></span>
+
+
+  </div>
+
+  <div contenteditable="true" id="text" name="text">Text goes here.</div>
+
+
+  </input>
+  </label>
+
+
+</div>
+
+
+<script>
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("demo");
+  output.innerHTML = slider.value / 100;
+
+  slider.oninput = function () {
+    output.innerHTML = this.value / 100;
+  }
+</script>
+
+</body>
+</html>
+
+
