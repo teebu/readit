@@ -5,6 +5,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
   <link rel="manifest" href="./images/site.webmanifest">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
 
@@ -398,13 +399,13 @@
 
   </script>
   <title>Read it to me!</title>
-
-
 </head>
 
 
 <style>
-
+  * {
+    font-family: "Segoe UI", Arial, 'sans-serif' !important;/* <-- fonts */
+  }
 
   html, body {
     width: 100%;
@@ -418,6 +419,7 @@
     min-width: 20em;
     min-height: 1.4em;
     width: 95%;
+    margin-top: 10px;
     padding: 0.3em 0.5em 0 0.5em;
     background-color: white;
     font-size: larger;
@@ -425,15 +427,17 @@
     border: 3px solid black;
     border-radius: 5px;
     overflow-y: auto;
+    scroll-behavior: smooth;
   }
 
+  @media only screen and (max-width:480px) {
+    #text {
+      font-size: 32px;
+    }
+  }
 
   section {
     min-height: 100%;
-  }
-
-  #text {
-    scroll-behavior: smooth
   }
 
   .button {
@@ -451,6 +455,14 @@
     cursor: pointer;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
+  }
+
+  @media only screen and (max-width:480px) {
+    .button {
+      width: 140px;
+      height: 75px;
+      font-size: 32px;
+    }
   }
 
   .btn {
@@ -502,20 +514,16 @@
 
 <body style="background-color:powderblue;">
 
-<div id="hello" style="height:100%; margin-left:10px; display:flex; flex-flow: column;">
+<div id="hello" style="height:100%; margin-left:10px; margin-top: 10px; display:flex; flex-flow: column;">
 
 
   <div style="flex: 0 1 auto;">
-
-    <h1>
-      Text to speech, able to read from caret position.
-    </h1>
-
 
     <button id="btn" class="button button2" onclick="Function()">Read</button>
 
     <button id="btn2" class="button button2" onclick="myFunction2()">Stop</button>
 
+    <div>
     <label>Voice
       <select id="voice"></select>
     </label>
@@ -523,7 +531,7 @@
 
     Speed: <input type="range" min="50" max="200" value="100" step="10" id="myRange" style="height:10px">
     <span id="demo"></span>
-
+    </div>
 
   </div>
 
