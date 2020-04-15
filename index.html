@@ -162,21 +162,16 @@
 
 
     $(function () {
-
-
-      $("#text").on('keydown keyup mousedown mouseup', function (e) {
-
+      $("#text").on('mouseup keyup', function (e) {
 
         if ($(window.getSelection().anchorNode).is($(this))) {
-          //$('#position').html('0')
+          //todo: why does this happen?
+          console.log('starting from begining.');
+          richCaretIndex = 0;
 
         } else {
           //alert(window.getSelection().anchorOffset);
-          ///////////var tarea = document.getElementById('volume');
-
-
           var parent = document.getElementById('text');
-
 
           var s = window.getSelection();
           var an = s.anchorNode;
@@ -486,10 +481,6 @@
       }
     }
 
-    function myFunction2() {
-
-    }
-
 
     function cleanup(){
       var tarea = document.getElementById('text');
@@ -552,9 +543,9 @@
 
   <div style="flex: 0 1 auto;">
 
-    <button id="btn" class="button button2" onclick="Function()">Read</button>
+    <button id="btn" class="button button2">Read</button>
 
-    <button id="btn2" class="button button2" onclick="myFunction2()">Stop</button>
+    <button id="btn2" class="button button2">Stop</button>
 
     <div>
     <label>Voice
