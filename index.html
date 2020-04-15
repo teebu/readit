@@ -259,11 +259,15 @@
         message.voice = voices[$(this).val()];
       });
 
+      function saveText() {
+        var text = document.getElementById("text");
+        localStorage.setItem("text", text.innerHTML.substring(0, 10000).trim());
+      }
 
       $(function () {
-
-
         $('#btn').on('click', function () {
+          cleanup(); // remove enters and junk
+          saveText(); // save text after cleanup
 
           var button = document.getElementById('btn');
           button.disabled  = true;
@@ -272,15 +276,11 @@
           //spanid = 0;
 
           var tarea = document.getElementById('text');
-
-
           x = tarea.innerText; //$("#text").val();
           //x = x.replace(/\n/g, "");
           //x = x.replace(/\r/g, "");
 
-
           lastoffset = richCaretIndex; // tarea.selectionStart;
-
 
           //we are at the end, go back to the beginning! :P
           if (lastoffset == x.length) {
@@ -491,6 +491,15 @@
     }
 
 
+    function cleanup(){
+      var tarea = document.getElementById('text');
+      x = tarea.innerText;
+      tarea.innerHTML = x.substring(0);
+      tarea.innerHTML = tarea.innerHTML.replace("\n", "@NewLine<div>");
+      tarea.innerHTML = tarea.innerHTML.replace(/\n/g, "@NewLine</div><div>");
+      tarea.innerHTML = tarea.innerHTML.replace(/@NewLine/g, "\n");
+    }
+
     $(function () {
       $('#btn2').on('click', function () {
         //alert("Hello");
@@ -502,13 +511,8 @@
         canceled = true;
         window.speechSynthesis.cancel();
 
-        var tarea = document.getElementById('text');
-        x = tarea.innerText;
-        tarea.innerHTML = x.substring(0);
-        tarea.innerHTML = tarea.innerHTML.replace("\n", "@NewLine<div>");
-        tarea.innerHTML = tarea.innerHTML.replace(/\n/g, "@NewLine</div><div>");
-        tarea.innerHTML = tarea.innerHTML.replace(/@NewLine/g, "\n");
 
+        cleanup()
         //beforelastoffset=0;
         //lastoffset=0;
         //offset=2;
@@ -584,10 +588,17 @@
   };
 
   (function (){
+    // loading data from local storage
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
     slider.value = localStorage.getItem("speed");
     output.innerHTML = slider.value / 100;
+
+    var text = document.getElementById("text");
+    var loaded_text = localStorage.getItem("text");
+    if (loaded_text) {
+      text.innerHTML = loaded_text;
+    }
   }());
 
 
