@@ -10,7 +10,7 @@
   <style>
 
     * {
-      font-family: "Segoe UI", Arial, 'sans-serif' !important;/* <-- fonts */
+      font-family: "Segoe UI", Arial, 'sans-serif' !important; /* <-- fonts */
       box-sizing: border-box;
     }
 
@@ -22,10 +22,10 @@
     }
 
     #hello {
-      height:100%;
-      width:100%;
+      height: 100%;
+      width: 100%;
       padding: 6px;
-      display:flex;
+      display: flex;
       flex-flow: column;
     }
 
@@ -46,7 +46,7 @@
       scroll-behavior: smooth;
     }
 
-    @media only screen and (max-width:480px) {
+    @media only screen and (max-width: 480px) {
       #text {
         font-size: 32px;
         width: 100%;
@@ -77,13 +77,13 @@
     }
 
     .button:disabled,
-    .button[disabled]{
+    .button[disabled] {
       border: #999999;
       background-color: #264c26;
       color: white;
     }
 
-    @media only screen and (max-width:480px) {
+    @media only screen and (max-width: 480px) {
       .button {
         width: 140px;
         height: 75px;
@@ -265,7 +265,7 @@
           saveText(); // save text after cleanup
 
           var button = document.getElementById('btn');
-          button.disabled  = true;
+          button.disabled = true;
 
           canceled = false;
           //spanid = 0;
@@ -358,7 +358,7 @@
 
         // enable button
         var button = document.getElementById('btn');
-        button.disabled  = false;
+        button.disabled = false;
       }
 
     };
@@ -482,7 +482,7 @@
     }
 
 
-    function cleanup(){
+    function cleanup() {
       var tarea = document.getElementById('text');
       x = tarea.innerText;
       tarea.innerHTML = x.substring(0);
@@ -497,7 +497,7 @@
         //window.alert(event.charIndex);
 
         var button = document.getElementById('btn');
-        button.disabled  = false;
+        button.disabled = false;
 
         canceled = true;
         window.speechSynthesis.cancel();
@@ -539,31 +539,23 @@
 <body style="background-color: powderblue;">
 
 <div id="hello">
-
-
   <div style="flex: 0 1 auto;">
 
     <button id="btn" class="button button2">Read</button>
-
     <button id="btn2" class="button button2">Stop</button>
 
     <div>
-    <label>Voice
-      <select id="voice"></select>
-    </label>
+      <label>Voice
+        <select id="voice"></select>
+      </label>
 
-    Speed: <input type="range" min="50" max="200" value="100" step="10" id="myRange" style="height:10px">
-    <span id="demo"></span>
+      Speed: <input type="range" min="50" max="200" value="100" step="10" id="myRange" style="height:10px">
+      <span id="demo"></span>
     </div>
 
   </div>
 
   <div contenteditable="true" id="text" name="text">Text goes here.</div>
-
-
-  </input>
-  </label>
-
 
 </div>
 
@@ -578,7 +570,7 @@
     localStorage.setItem("speed", this.value);
   };
 
-  (function (){
+  (function () {
     // loading data from local storage
     var slider = document.getElementById("myRange");
     var output = document.getElementById("demo");
