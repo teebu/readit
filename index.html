@@ -227,13 +227,12 @@
       document.querySelector("div[contenteditable]").addEventListener("paste", function (e) {
         e.preventDefault();
         var text = e.clipboardData.getData("text/plain");
+
         text = text.replace("\n", "@NewLine<div>");
         text = text.replace(/\n/g, "@NewLine</div><div>");
 
         text = text.replace(/ /g, "&nbsp");
-
         text = text.replace(/\n/g, "");
-
         text = text.replace(/@NewLine/g, "\n");
         //text = text.replace(/\r/g, "");
 
@@ -520,7 +519,7 @@
 
       for (var i = 0; i < voices.length; i++) {
         $("select").append("<option value=\"" + i + "\">" + voices[i].name + "</option>");
-        var n = voices[i].name.search("Online");
+        var n = voices[i].name.search("Aria Online");
         if (myPersonalPref === -1 && n !== -1) {
           myPersonalPref = i;
         }
