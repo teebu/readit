@@ -140,6 +140,7 @@
       //var message = new SpeechSynthesisUtterance($("#text").val());
 
       var x;
+      var voiceName;
 
       var beforelastoffset = 0;
       var lastoffset = 0;
@@ -247,6 +248,7 @@
         function saveText() {
           var text = document.getElementById("text");
           localStorage.setItem("text", text.innerHTML.substring(0, 10000).trim());
+          localStorage.setItem("voiceName", message.voice.name );
         }
 
         $(function () {
@@ -603,16 +605,18 @@
 
       // Hack around voices bug
       var interval = setInterval(function () {
+
+        console.log( "voice name:" + voiceName );
+
         voices = speechSynthesis.getVoices();
         if (voices.length) clearInterval(interval);
         else return;
 
-        myPersonalPref = 0;
+        let myPersonalPref = 0;
 
         for (var i = 0; i < voices.length; i++) {
           $("select").append('<option value="' + i + '">' + voices[i].name + "</option>");
-          var n = voices[i].name.search("Aria Online");
-          if (myPersonalPref === 0 && n !== -1) {
+          if ( voices[i].name == voiceName) {
             myPersonalPref = i;
           }
         }
@@ -659,6 +663,7 @@
         var slider = document.getElementById("myRange");
         var output = document.getElementById("demo");
         slider.value = localStorage.getItem("speed");
+        voiceName = localStorage.getItem("voiceName");
         output.innerHTML = slider.value / 100;
 
         var text = document.getElementById("text");
