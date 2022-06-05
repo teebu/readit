@@ -607,18 +607,18 @@
         if (voices.length) clearInterval(interval);
         else return;
 
-        myPersonalPref = -1;
+        myPersonalPref = 0;
 
         for (var i = 0; i < voices.length; i++) {
           $("select").append('<option value="' + i + '">' + voices[i].name + "</option>");
           var n = voices[i].name.search("Aria Online");
-          if (myPersonalPref === -1 && n !== -1) {
+          if (myPersonalPref === 0 && n !== -1) {
             myPersonalPref = i;
           }
         }
-        if (myPersonalPref !== -1) {
-          $("#voice").val(myPersonalPref).trigger("change");
-        }
+
+        $("#voice").val(myPersonalPref).trigger("change");
+
       }, 100);
     </script>
     <title>Read it</title>
