@@ -4169,6 +4169,11 @@ function mapNodesFromRootVal(t, descendants) {
           }
         );
 
+        document.getElementById("flex").addEventListener("mousedown", function (e) {
+            window.getSelection().removeAllRanges();
+            e.stopPropagation();
+          }
+        );
 
 
         $(function () {
