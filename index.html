@@ -154,6 +154,13 @@
 
       var spanid = 0;
 
+      var isEdge = false;
+
+      if (/Edg/.test(navigator.userAgent)) {
+        //alert('Hello Microsoft Edge User!');
+        isEdge = true;
+      }
+
       $(function () {
         $("#text").on("mouseup keyup", function (e) {
           if ($(window.getSelection().anchorNode).is($(this))) {
@@ -215,7 +222,7 @@
           text = text.replace("\n", "@NewLine<div>");
           text = text.replace(/\n/g, "@NewLine</div><div>");
 
-          text = text.replace(/ /g, "&nbsp");
+          text = text.replace(/ /g, " ");
           text = text.replace(/\n/g, "");
           text = text.replace(/@NewLine/g, "\n");
           //text = text.replace(/\r/g, "");
@@ -293,9 +300,9 @@
 
             // create invisible text area +++++
             /*var tarea = document.getElementById('text');
-          clearTextArea();
-          createTextArea( parseInt(tarea.style.width) , ( parseInt(tarea.style.height) ) );
-          tmpinvisinx = 0;*/
+                clearTextArea();
+                createTextArea( parseInt(tarea.style.width) , ( parseInt(tarea.style.height) ) );
+                tmpinvisinx = 0;*/
           });
         });
       });
@@ -416,7 +423,7 @@
           return " ";
         }
         var myTrim2 = myTrim.replace(/[\s\.\'\?"!\u2026\u201C\u201D\u2018\u2019\u200B]*/g, "");
-        if (override == false && myTrim2.length <= 0 ) {
+        if (override == false && myTrim2.length <= 0) {
           /* added space for 'no gap' highlighting of continuous text */
           var word_regexp = /[\.\?\!'" ]|[\u2018\u2019\u201A\u201B\u2032\u2035]|[\u201C\u201D\u201E\u201F\u2033\u2036]/;
           if (myTrim.match(word_regexp)) {
@@ -428,10 +435,47 @@
             }
           }
         }
-        return myTrim2; 
+        return myTrim2;
+      }
+
+      message.onboundary = function (event) {
+        if (event.name == "word") {
+          myOnBoundary(event);
+        }
+      };
+
+      function myOnBoundary(event) {
+        //var otterrance = event.utterance.text;
+
+        var ev_CharIndex = event.charIndex + beforelastoffset;
+        var ev_CharLength = event.charLength;
+
+        var tarea = document.getElementById("text");
+
+        //console.log( "charIndex: " + ev_CharIndex + " lastoffset: " + lastoffset );
+
+        var replacer = x.substring(ev_CharIndex, ev_CharIndex + ev_CharLength);
+        replacer = replacer.replace(/\n/g, "<BR>");
+        //console.log( replacer );
+        tarea.innerHTML =
+          x.substring(0, ev_CharIndex) + '<span style="background-color:yellow" id="' + spanid + '">' + replacer + "</span>" + x.substring(ev_CharIndex + ev_CharLength);
+        //console.log( replacer +"|" );
+
+        tarea.innerHTML = tarea.innerHTML.replace("\n", "@NewLine<div>");
+        tarea.innerHTML = tarea.innerHTML.replace(/\n/g, "@NewLine</div><div>");
+        tarea.innerHTML = tarea.innerHTML.replace(/@NewLine/g, "\n");
+
+        if( event.charIndex <= 5 ){
+            scrollTo(spanid);
+        }
+        spanid++;
       }
 
       function highlight() {
+
+        if( isEdge ){
+            return;
+        }
         //find the current reading fragment and highlight it
         //<span id="The_Anchor_Element">The Anchor Element</span>
         var tarea = document.getElementById("text");
