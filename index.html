@@ -4165,6 +4165,7 @@ function mapNodesFromRootVal(t, descendants) {
 
         document.getElementById("flex").addEventListener("click", function (e) {
             window.getSelection().removeAllRanges();
+            e.stopPropagation();
           }
         );
 
@@ -4175,8 +4176,17 @@ function mapNodesFromRootVal(t, descendants) {
             removeMultipleNodeHilights();
             saveText(); // save text after cleanup
 
+            try{
+              if( document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode){
+                window.getSelection().removeAllRanges();
+              }
+            }catch (Ex){}
+
+
             try {
               sendClick(null, window.getSelection().anchorNode.parentNode);
+
+
             } catch (Ex) {
               if (x == "" || x == null) {
                 var text = document.getElementById("text");
