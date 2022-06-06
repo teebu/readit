@@ -4144,6 +4144,7 @@ function mapNodesFromRootVal(t, descendants) {
             button.disabled = false;
 
             pause();
+            removeMultipleNodeHilights();
 
             //cleanup();
             //beforelastoffset=0;
@@ -4169,7 +4170,7 @@ function mapNodesFromRootVal(t, descendants) {
         document.getElementById("flex").addEventListener("mousedown", function (e) {
           var button = document.getElementById("btn");
           if (button == e.path[0] ) {
-            console.log( "button" );
+            //console.log( "button" );
           } else {
             window.getSelection().removeAllRanges();
             e.stopPropagation();
@@ -4265,7 +4266,7 @@ function mapNodesFromRootVal(t, descendants) {
         var output = document.getElementById("demo");
         slider.value = localStorage.getItem("speed");
         speechRate = slider.value / 100;
-        console.log(speechRate);
+        //console.log(speechRate);
         voiceName = localStorage.getItem("voiceName");
         output.innerHTML = slider.value / 100;
 
