@@ -4209,8 +4209,10 @@ function mapNodesFromRootVal(t, descendants) {
               currentTarget.push(window.getSelection().anchorNode);
               var text = document.getElementById("text");
               if( text != window.getSelection().anchorNode.parentNode ){
-                currentTarget.push(window.getSelection().anchorNode.parentNode);
+                //currentTarget.push(window.getSelection().anchorNode.parentNode);
               }
+
+              console.log( currentTarget );
 
               sendClick(null, currentTarget);
             } catch (Ex) {
