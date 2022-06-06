@@ -412,9 +412,17 @@
 
           //offset = getIndex(x, lastoffset + 1);
           removeMultipleNodeHilights();
+          
+          if( lastoffset == undefined ){
+            beforelastoffset = 0;
+            lastoffset = 0;
+          }
+
           if (getNextIndexThatIsNotEmpty() == false) {
-            console.log("No words there..");
-            canceled = true;
+            console.log("No words there..");  
+            pause();
+            var button = document.getElementById("btn");
+            button.disabled = false;
             return;
           }
 
@@ -1538,6 +1546,7 @@
         }
 
         function yellowHighlight(otterranceColor, ev_CharIndex, ev_CharLength, local_lastDoc, fromOverflow = 0) {
+          
           initHighlightSpan(local_lastDoc);
           if (myHilightSpan == null) {
             highlightRemoved = true; /*in case of emergency, reset. ¯\_(ツ)_/¯  */
@@ -2689,6 +2698,7 @@ function mapNodesFromRootVal(t, descendants) {
               //console.log( "U INDX: " + _ultra_index );
               var i;
               var nextTarget;
+
               for (i = 0; _curentTarget && (nextTarget = getNextTarget(_curentTarget)) != null; i++) {
                 //let nextTarget = getNextTarget(_curentTarget); // zeroth element is the target
                 if (nextTarget && nextTarget[0]) {
@@ -3373,6 +3383,7 @@ function mapNodesFromRootVal(t, descendants) {
         const pointInRect = (x1, y1, x2, y2, x, y) => x > x1 && x < x2 && y > y1 && y < y2;
 
         function sendClick(evnt, curentTarget = null, attempts = 0) {
+
           if (attempts == 0) {
             if (evnt != null) {
               /*if it's a link, don't read it*/
@@ -4146,6 +4157,7 @@ function mapNodesFromRootVal(t, descendants) {
             pause();
             removeMultipleNodeHilights();
 
+
             //cleanup();
             //beforelastoffset=0;
             //lastoffset=0;
@@ -4182,6 +4194,9 @@ function mapNodesFromRootVal(t, descendants) {
             removeMultipleNodeHilights();
             saveText(); // save text after cleanup
 
+            var button = document.getElementById("btn");
+            button.disabled = true;
+
             try {
               if (document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode || document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode.parentNode) {
                 window.getSelection().removeAllRanges();
@@ -4189,7 +4204,15 @@ function mapNodesFromRootVal(t, descendants) {
             } catch (Ex) {}
 
             try {
-              sendClick(null, window.getSelection().anchorNode.parentNode);
+
+              currentTarget = [];
+              currentTarget.push(window.getSelection().anchorNode);
+              var text = document.getElementById("text");
+              if( text != window.getSelection().anchorNode.parentNode ){
+                currentTarget.push(window.getSelection().anchorNode.parentNode);
+              }
+
+              sendClick(null, currentTarget);
             } catch (Ex) {
               if (x == "" || x == null) {
                 var text = document.getElementById("text");
@@ -4199,9 +4222,7 @@ function mapNodesFromRootVal(t, descendants) {
               }
             }
 
-            var button = document.getElementById("btn");
-            button.disabled = true;
-            canceled = false;
+
           });
         });
       });
