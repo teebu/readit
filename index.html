@@ -1629,7 +1629,7 @@
                   spanBeforeEnd +
                   RepLtGt(originalHtml.substring(end));
                 if (hasWhiteSpace && fromOverflow == 0) {
-                  if (start <= tmpCharIndex && start + 5 >= tmpCharIndex || !isEdge ) {
+                  if ((start <= tmpCharIndex && start + 5 >= tmpCharIndex) || !isEdge) {
                     try {
                       var sd;
 
@@ -1645,8 +1645,6 @@
                       }
                       //var myChildNodes = myHilightSpan.parentNode.childNodes[1].childNodes;
                       sd && autoscroll && sd.scrollIntoView({ behavior: "smooth", block: "center" });
-
-
                     } catch (Ex) {
                       console.log(Ex);
                     }
@@ -4164,34 +4162,33 @@ function mapNodesFromRootVal(t, descendants) {
         );
 
         document.getElementById("flex").addEventListener("click", function (e) {
-            window.getSelection().removeAllRanges();
-            e.stopPropagation();
-          }
-        );
+          window.getSelection().removeAllRanges();
+          e.stopPropagation();
+        });
 
         document.getElementById("flex").addEventListener("mousedown", function (e) {
+          var button = document.getElementById("btn");
+          if (button == e.path[0] ) {
+            console.log( "button" );
+          } else {
             window.getSelection().removeAllRanges();
             e.stopPropagation();
           }
-        );
-
+        });
 
         $(function () {
           $("#btn").on("click", function () {
             removeMultipleNodeHilights();
             saveText(); // save text after cleanup
 
-            try{
-              if( document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode){
+            try {
+              if (document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode || document.getElementById("flex") == window.getSelection().anchorNode.parentNode.parentNode.parentNode) {
                 window.getSelection().removeAllRanges();
               }
-            }catch (Ex){}
-
+            } catch (Ex) {}
 
             try {
               sendClick(null, window.getSelection().anchorNode.parentNode);
-
-
             } catch (Ex) {
               if (x == "" || x == null) {
                 var text = document.getElementById("text");
