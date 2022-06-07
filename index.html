@@ -155,7 +155,7 @@
       .dropbtn:focus {
         background-color: #2f6b31; /* Green */
         border: none;
-        width: 100px;
+        width: 120px;
         height: 50px;
         color: white;
         padding: 8px 20px;
@@ -172,7 +172,7 @@
       .dropbtn {
         background-color: #4caf50; /* Green */
         border: none;
-        width: 100px;
+        width: 120px;
         height: 50px;
         color: white;
         padding: 8px 20px;
@@ -497,6 +497,10 @@
 
         if (getNextIndexThatIsNotEmpty() == false) {
           console.log("No words there..");
+          window.getSelection().removeAllRanges();
+          alldescendants = [];
+          _ultra_Xstr = "";
+          x = null;
           pause();
           var button = document.getElementById("btn");
           button.disabled = false;
@@ -3635,7 +3639,6 @@ function mapNodesFromRootVal(t, descendants) {
         return false;
       }
 
-
       var dialogIsOpen = false;
       function openDialog(e) {
         e.preventDefault();
@@ -3840,7 +3843,6 @@ function mapNodesFromRootVal(t, descendants) {
           }
         }
 
-        
         //voiceName = items.voiceName;
         //speechRate = items.voiceSeed / 100;
 
@@ -3959,8 +3961,6 @@ function mapNodesFromRootVal(t, descendants) {
         }
         return str;
       }
-
-      
 
       function fx(str) {
         if (readMultipleNodes) {
@@ -4277,16 +4277,13 @@ function mapNodesFromRootVal(t, descendants) {
           "click",
           function () {
             var myDropdown = document.getElementById("myDropdown");
-            if (myDropdown.classList.contains('show')) {
-              myDropdown.classList.remove('show');
+            if (myDropdown.classList.contains("show")) {
+              myDropdown.classList.remove("show");
               saveReplace();
             }
           },
           false
         );
-
-
-        
 
         $("#btn").on("click", function () {
           removeMultipleNodeHilights();
@@ -4304,58 +4301,51 @@ function mapNodesFromRootVal(t, descendants) {
 
           try {
             currentTarget = [];
-            currentTarget.push(window.getSelection().anchorNode);
-            var text = document.getElementById("text");
-            if (text != window.getSelection().anchorNode.parentNode) {
-              //currentTarget.push(window.getSelection().anchorNode.parentNode);
-            }
-
-            //console.log( currentTarget );
-
-            sendClick(null, currentTarget);
-          } catch (Ex) {
-            if (x == "" || x == null) {
+            if (window.getSelection() && window.getSelection().anchorNode) {
+              currentTarget.push(window.getSelection().anchorNode);
               var text = document.getElementById("text");
-              sendClick(null, text);
+              sendClick(null, currentTarget);
             } else {
-              togglePlayButton();
+              if (x == "" || x == null) {
+                var text = document.getElementById("text");
+                sendClick(null, text);
+              } else {
+                togglePlayButton();
+              }
             }
+          } catch (Ex) {
+            console.log(Ex);
           }
         });
       });
 
-  
-        // Hack around voices bug
-        var intervalZ = setInterval(function () {
-          voices = speechSynthesis.getVoices();
-          if (voices.length) clearInterval(intervalZ);
-          else return;
+      // Hack around voices bug
+      var intervalZ = setInterval(function () {
+        voices = speechSynthesis.getVoices();
+        if (voices.length) clearInterval(intervalZ);
+        else return;
 
-          let myPersonalPref = 0;
+        let myPersonalPref = 0;
 
-          for (var i = 0; i < voices.length; i++) {
-            $("select").append('<option value="' + i + '">' + voices[i].name + "</option>");
-            if (voices[i].name == voiceName) {
-              myPersonalPref = i;
-            }
+        for (var i = 0; i < voices.length; i++) {
+          $("select").append('<option value="' + i + '">' + voices[i].name + "</option>");
+          if (voices[i].name == voiceName) {
+            myPersonalPref = i;
           }
+        }
 
-          $("#voice").val(myPersonalPref).trigger("change");
+        $("#voice").val(myPersonalPref).trigger("change");
 
-           document.getElementById("voice").addEventListener("change",voiceChanged);
+        document.getElementById("voice").addEventListener("change", voiceChanged);
 
-        function voiceChanged(){
-
+        function voiceChanged() {
           message.voice = voices[$(this).val()];
           if (voices[$(this).val()] != undefined) {
-            voiceName = voices[$(this).val()].name; 
+            voiceName = voices[$(this).val()].name;
             currentVoice = items.voiceIndex;
           }
         }
-          
-        }, 100);
-
-       
+      }, 100);
 
       var running = false;
       function myFunction() {
@@ -4401,7 +4391,7 @@ function mapNodesFromRootVal(t, descendants) {
               </div>
               <div>
                 <p></p>
-                <textarea name="text" id="replace" style="height:383px; resize: none; background-color: rgba(255, 255, 255, 0.87); width: 98.5%"></textarea>
+                <textarea name="text" id="replace" style="height: 383px; resize: none; background-color: rgba(255, 255, 255, 0.87); width: 98.5%"></textarea>
               </div>
             </div>
           </div>
